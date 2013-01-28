@@ -49,18 +49,18 @@ def generate_signed_url(obj_name, method='GET'):
     return url
 
 
-@app.route('/signs3put'):
+@app.route('/signs3put')
 def put_url():
     url_data = { 'url' : generate_signed_url('testing', method='PUT') }
     return json.loads(url_data)
 
 
-@app.route('/callback'):
+@app.route('/callback')
 def callback():
     return 'Callback!'
 
 
-@app.route('/'):
+@app.route('/')
 def index():
     return render_template('index.html')
 
