@@ -29,6 +29,12 @@ def generate_signed_url(obj_name, method='GET'):
 
     bucket_name = generate_bucket_name()
     bucket = conn.create_bucket(bucket_name)
+    # Setting CORS config (Cross Origin Resource Sharing)
+    cors_cfg = boto.s3.cors.CORSConfiguration()
+    cors_cfg.add_rule(['PUT', 'POST', 'DELETE'], 'https://127.0.0.1', allowed_header='*', max_age_seconds=3000, expose_header='x-amz-server-side-encryption')
+    cors_cfg.add_rule('GET', '*')
+    bucket.set_cors(cors_cfg)
+
     headers={
         'Content-Type': 'application/octet-stream',
         'x-amz-acl' : 'public-read',
