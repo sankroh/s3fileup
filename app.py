@@ -50,13 +50,18 @@ def generate_signed_url(obj_name, method='GET'):
 
 
 @app.route('/signs3put'):
-def put_url(request):
-    url = generate_signed_url('testing', method='PUT')
+def put_url():
+    url_data = { 'url' : generate_signed_url('testing', method='PUT') }
+    return json.loads(url_data)
 
 
 @app.route('/callback'):
-def callback(request):
+def callback():
     return 'Callback!'
+
+
+@app.route('/'):
+def index():
 
 
 if __name__ == '__main__':
