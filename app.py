@@ -5,7 +5,7 @@ import json
 import os
 
 import boto
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -16,7 +16,7 @@ def generate_bucket_name():
     return AWS_STORAGE_BUCKET_NAME
 
 
-def generate_signed_url(obj_name, method='GET'):
+def generate_signed_url(obj_name, obj_type, method='GET'):
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
@@ -39,8 +39,8 @@ def generate_signed_url(obj_name, method='GET'):
     cors_cfg.add_rule('GET', '*')
     bucket.set_cors(cors_cfg)
 
-    headers={
-        'Content-Type': 'application/octet-stream',
+    headers= {
+        'Content-Type': obj_type,
         'x-amz-acl' : 'public-read',
     }
 
@@ -51,7 +51,11 @@ def generate_signed_url(obj_name, method='GET'):
 
 @app.route('/signs3put')
 def put_url():
-    url_data = { 'url' : generate_signed_url('testing', method='PUT') }
+    # get params from URL
+    s3_object_type = request.args.get('s3_object_type', 'application/octet-stream')
+    s3_object_name = request.args.get('s3_object_name', 'untitled_file')
+
+    url_data = { 'url' : generate_signed_url(s3_object_name, s3_object_type, method='PUT') }
     return json.loads(url_data)
 
 
