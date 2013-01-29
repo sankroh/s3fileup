@@ -23,17 +23,25 @@
     function S3Upload(options) {
       if (options == null) options = {};
       _.extend(this, options);
-      this.handleFileSelect($(this.file_dom_selector).get(0));
+      var s3this = this;
+      $(s3this.file_dom_selector).bind('change', S3Upload, function(event){
+          event.data.prototype.handleFileSelect($(s3this.file_dom_selector).get(0), options);
+      });
+      //document.getElementById('files').addEventListener('change', this.handleFileSelect, false);
+      //this.handleFileSelect($(this.file_dom_selector).get(0));
     }
 
-    S3Upload.prototype.handleFileSelect = function(file_element) {
+    S3Upload.prototype.handleFileSelect = function(file_element, options) {
       var f, files, output, _i, _len, _results;
+      _.extend(this, options);
+      console.log(this);
       this.onProgress(0, 'Upload started.');
       files = file_element.files;
       output = [];
       _results = [];
       for (_i = 0, _len = files.length; _i < _len; _i++) {
         f = files[_i];
+        console.log('file:', f);
         _results.push(this.uploadFile(f));
       }
       return _results;
@@ -68,7 +76,7 @@
             this_s3upload.onError('Signing server returned some ugly/empty JSON: "' + this.responseText + '"');
             return false;
           }
-          return callback(decodeURIComponent(result.signed_request), result.url);
+          return callback(result.url);
         } else if (this.readyState === 4 && this.status !== 200) {
           return this_s3upload.onError('Could not contact request signing server. Status = ' + this.status);
         }

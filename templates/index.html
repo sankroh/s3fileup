@@ -2,6 +2,8 @@
 <title>Hello</title>
 <head>
  <link rel="stylesheet" type="text/css" href="static/css/styles.css" />
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
  <script type="text/javascript" src="static/js/app.js"></script>
 </head>
 
@@ -22,8 +24,32 @@
   </table>
 
   <script type="text/javascript">
-    document.getElementById('files').addEventListener('change', handleFileSelect, false);
     setProgress(0, 'Waiting for upload.');
+    var s3upload = s3upload != null ? s3upload : new S3Upload({
+      file_dom_selector: '#files',
+      s3_sign_put_url: '/signs3put',
+      onProgress: function(percent, message) { // Use this for live upload progress bars
+        console.log('Upload progress: ', percent, message);
+        setProgress(percent, message);
+      },
+      onFinishS3Put: function(public_url) { // Get the URL of the uploaded file
+        console.log('Upload finished: ', public_url);
+        setProgress(100, 'Upload finished: ' + public_url);
+      },
+      onError: function(status) {
+        console.log('Upload error: ', status);
+        setProgress(0, 'Upload error: ' + status);
+      }
+    });
+    function setProgress(percent, statusLabel)
+    {
+      var progress = document.querySelector('.percent');
+      progress.style.width = percent + '%';
+      progress.textContent = percent + '%';
+      document.getElementById('progress_bar').className = 'loading';
+
+      document.getElementById('status').innerText = statusLabel;
+    }
   </script>
 
 </body>
