@@ -1,6 +1,11 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, include
 
-urlpatterns = patterns('s3fileup.views',
-    url(r'^s3put/$', 'put_url', name='s3fileup:put_url'),
-    url(r'^s3get/$', 'get_url', name='s3fileup:get_url'),
+from tastypie.api import Api
+from s3fileup.api.resources import S3PutResource
+
+v1_api = Api(api_name='v1')
+v1_api.register(S3PutResource())
+
+urlpatterns = patterns('',
+    (r'^s3/', include(v1_api.urls)),
 )
