@@ -4,14 +4,16 @@
 import json
 import os
 
-import boto
+from boto.s3.connection import S3Connection, OrdinaryCallingFormat
+from boto.s3.cors import CORSConfiguration
+from boto.exception import S3CreateError
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 
 def generate_bucket_name():
-    AWS_STORAGE_BUCKET_NAME = 'app_fileup_assets'
+    AWS_STORAGE_BUCKET_NAME = 'app_mi_assets'
 
     return AWS_STORAGE_BUCKET_NAME
 
@@ -20,22 +22,21 @@ def generate_signed_url(obj_name, obj_type, method='GET'):
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
-    conn = boto.connect_s3(
+    conn = S3Connection(
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        calling_format=boto.s3.connection.OrdinaryCallingFormat(),
-        success_action_redirect='http://127.0.0.1:5000/callback/'
+        calling_format=OrdinaryCallingFormat()
     )
 
     bucket_name = generate_bucket_name()
     try:
         bucket = conn.create_bucket(bucket_name)
-    except boto.exception.S3CreateError:
+    except S3CreateError:
         bucket =conn.lookup(bucket_name)
 
     # Setting CORS config (Cross Origin Resource)
-    cors_cfg = boto.s3.cors.CORSConfiguration()
-    cors_cfg.add_rule(['PUT', 'POST', 'DELETE'], 'https://127.0.0.1', allowed_header='*', max_age_seconds=3000, expose_header='x-amz-server-side-encryption')
+    cors_cfg = CORSConfiguration()
+    cors_cfg.add_rule(['PUT', 'POST', 'DELETE'], 'http://localhost:5000', allowed_header='*', max_age_seconds=3000, expose_header='x-amz-server-side-encryption')
     cors_cfg.add_rule('GET', '*')
     bucket.set_cors(cors_cfg)
 
@@ -56,7 +57,7 @@ def put_url():
     s3_object_name = request.args.get('s3_object_name', 'untitled_file')
 
     url_data = { 'url' : generate_signed_url(s3_object_name, s3_object_type, method='PUT') }
-    return json.loads(url_data)
+    return json.dumps(url_data)
 
 
 @app.route('/callback')
