@@ -5,7 +5,7 @@ S3FileUp is an Apache2 Licensed pluggable Django app that provides you with an
 API to upload files to S3 directly from the browser, without the file ever
 touching your server.
 
-It's implemented using ``django-tastypie``, so you can reuse any of the Authorization
+It's implemented using ``django-restframework``, so you can reuse any of the Authorization
 /Authentication schemes that your webapp uses. There is also an implementation
 without any django dependencies, see the [examples](#examples) section for more
 info.
@@ -14,7 +14,7 @@ info.
 ----------------------
 
 * boto==2.7.0
-* django-tastypie==0.9.11
+* django-restframework==2.3.6
 
 Installation
 ------------
@@ -46,23 +46,32 @@ Hook up the URLs, add this to your URLConf:
 Settings
 --------
 
-TODO Add settings used
+* **S3FILEUP_GENERATE_BUCKET** : Indicate if you want to create a new bucket,
+  defaults to ``False``.
 
-* S3FILEUP_GENERATE_BUCKET
-* S3FILEUP_BUCKET_PREFIX
-* S3FILEUP_BUCKET_NAME
-* S3FILEUP_DOMAIN
+* **S3FILEUP_BUCKET_PREFIX** : Prefix for a new bucket. The suffix is auto-generated
+  from the current datetime and is of the format ``%Y_%m_%d_%H_%M``. This only
+  required if ``S3FILEUP_GENERATE_BUCKET`` is set to ``True``.
+
+* **S3FILEUP_BUCKET_NAME** : S3 Bucket name to use. This is only required if ``S3FILEUP_GENERATE_BUCKET``
+  is set to ``False``.
+
+* **S3FILEUP_DOMAIN** : Domain you will be uploading from. This is used to set CORS
+  configs on the bucket, so that cross-domain upload requests are allowed.
+
+* **S3FILEUP_MAX_AGE** : Define the max age of the url that is generated,
+  defaults to ``3000``. The value is in seconds.
 
 Usage
 -----
 
-This app exposes two resource URLs that can be used by the client. Using the example
-above, the URLs are ``/uploads/s3/v1/s3put/`` and ``/uploads/s3/v1/s3get/``.
+This app exposes one resource URLs that can be used by the client. Using the example
+above, the URL is ``/uploads/s3/s3put/``.
 
 ### Get an upload URL
 
 >#### Definition
->``POST /uploads/s3/v1/s3put/``
+>``POST /uploads/s3/s3put/``
 >
 >#### Parameters
 >* ``s3_object_name`` (required) - Name of the file being uploaded
@@ -73,7 +82,7 @@ above, the URLs are ``/uploads/s3/v1/s3put/`` and ``/uploads/s3/v1/s3get/``.
 >
 >#### Example Request
 >```bash
->$ curl https://my_app/uploads/s3/v1/s3put/ \
+>$ curl https://my_app/uploads/s3/s3put/ \
 >  -u my_user \
 >  -d "s3_object_name=my_awesome_movie.mov" \
 >  -d "s3_object_type=video/quicktime" \
@@ -94,14 +103,14 @@ above, the URLs are ``/uploads/s3/v1/s3put/`` and ``/uploads/s3/v1/s3get/``.
 >the relevant values in ``settings.py``. See [Settings](#settings) for a full list of settings
 >available.
 
-### Get a read-only URL
-
->Not implemented.
 
 Examples
 --------
 The ``examples`` folder contains a sample Django app with a JavaScript implementation
 of a upload client.
+
+>For those who prefer django-tastypie over django-restframework, there is a
+working implementation in the ``tastypie`` branch.
 
 >For those who are Django averse or just want a simple API, there is a sample
 [Flask](http://flask.pocoo.org) app in the ``flask`` branch. The Flask app does
