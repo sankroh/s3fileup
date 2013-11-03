@@ -1,37 +1,29 @@
 #!/usr/bin/env python
 
 try:
-    from setuptools import setup, find_packages
-    from setuptools.command.test import test
+    from setuptools import setup
 except ImportError:
-    from ez_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup, find_packages
-    from setuptools.command.test import test
+    from distutils.core import setup
 
-
-class mytest(test):
-    def run(self, *args, **kwargs):
-        from runtests import runtests
-        runtests()
+packages = [
+    's3fileup',
+]
 
 setup(
     name='s3fileup',
-    version='0.1.0',
+    version='0.3',
     author='Rohit Sankaran',
     author_email='rohit@riot.io',
     url='http://github.com/heartherumble/s3fileup',
     description = 'Django app that exposes a file upload API to S3, direct from the client',
-    packages=find_packages(),
+    packages=packages,
+    package_data={'': ['README.md', 'LICENSE', 'AUTHORS'],},
+    package_dir={'s3fileup': 's3fileup'},
     zip_safe=False,
-    install_requires=['boto'],
-    tests_require = [
-        'Django',
+    install_requires=[
         'boto',
     ],
-    test_suite = 'nexus.tests',
     include_package_data=True,
-    cmdclass={"test": mytest},
     classifiers=[
         'Framework :: Django',
         'Intended Audience :: Developers',
