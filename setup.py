@@ -21,7 +21,8 @@ setup(
     package_dir={'s3fileup': 's3fileup'},
     zip_safe=False,
     install_requires=[
-        'boto',
+        'boto>=2.7.0',
+        'django-restframework>=2.3.6',
     ],
     include_package_data=True,
     classifiers=[
