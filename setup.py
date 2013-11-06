@@ -10,11 +10,11 @@ packages = [
 ]
 
 setup(
-    name='s3fileup',
-    version='0.3',
+    name='django-s3fileup',
+    version='0.35',
     author='Rohit Sankaran',
     author_email='rohit@riot.io',
-    url='http://github.com/heartherumble/s3fileup',
+    url='http://github.com/roadhead/s3fileup',
     description = 'Django app that exposes a file upload API to S3, direct from the client',
     packages=packages,
     package_data={'': ['README.md', 'LICENSE', 'AUTHORS'],},
