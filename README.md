@@ -5,7 +5,7 @@ S3FileUp is an Apache2 Licensed pluggable Django app that provides you with an
 API to upload files to S3 directly from the browser, without the file ever
 touching your server.
 
-It's implemented using ``django-restframework``, so you can reuse any of the Authorization
+It's implemented using ``djangorestframework``, so you can reuse any of the Authorization
 /Authentication schemes that your webapp uses. There is also an implementation
 without any django dependencies, see the [examples](#examples) section for more
 info.
@@ -14,7 +14,7 @@ info.
 ----------------------
 
 * boto==2.7.0
-* django-restframework==2.3.6
+* djangorestframework==2.3.6
 
 Installation
 ------------

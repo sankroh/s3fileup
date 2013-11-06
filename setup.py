@@ -11,7 +11,7 @@ packages = [
 
 setup(
     name='django-s3fileup',
-    version='0.35',
+    version='0.4',
     author='Rohit Sankaran',
     author_email='rohit@riot.io',
     url='http://github.com/roadhead/s3fileup',
@@ -22,7 +22,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'boto>=2.7.0',
-        'django-restframework>=2.3.6',
+        'djangorestframework>=2.3.6',
     ],
     include_package_data=True,
     classifiers=[
