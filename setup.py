@@ -7,11 +7,12 @@ except ImportError:
 
 packages = [
     's3fileup',
+    's3fileup/api',
 ]
 
 setup(
     name='django-s3fileup',
-    version='0.4',
+    version='0.5',
     author='Rohit Sankaran',
     author_email='rohit@riot.io',
     url='http://github.com/roadhead/s3fileup',
